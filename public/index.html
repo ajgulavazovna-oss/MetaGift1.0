@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quant Market</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    </head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="balance-section">
+                <div class="balance">
+                    <img src="https://i.postimg.cc/3N3f5zhH/IMG-1243.png" style="width: 24px; height: 24px;" alt="Stars">
+                    <span class="balance-amount" id="userBalance" data-balance>0</span>
+                    <button class="add-balance" onclick="openTopUpModal()">+</button>
+                </div>
+                <div class="user-info" id="headerUserInfo">
+                    <img id="headerUserAvatar" src="https://i.postimg.cc/FHzrQQZD/IMG-1211.png" alt="Avatar" style="width: 32px; height: 32px; border-radius: 50%; margin-right: 8px; border: 2px solid rgba(0, 136, 204, 0.3);">
+                    <span id="headerUsername">@username</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Market Section -->
+            <div class="section" id="marketSection">
+                <div class="nft-grid" id="nftGrid">
+                    <!-- NFT items will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Activity Section -->
+            <div class="section" id="activitySection" style="display: none;">
+                <div class="activity-list" id="activityList">
+                    <!-- Activity items will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Inventory Section -->
+            <div class="section" id="inventorySection" style="display: none;">
+                <div class="inventory-grid" id="inventoryGrid">
+                    <!-- Inventory items will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Profile Section -->
+            <div class="section" id="profileSection" style="display: none;">
+                <div class="profile-panel">
+                    <!-- User Info Section -->
+                    <div class="profile-user-section">
+                        <div class="profile-user-info">
+                            <div class="profile-avatar">
+                                <img id="userAvatar" src="https://i.postimg.cc/FHzrQQZD/IMG-1211.png" alt="Avatar">
+                            </div>
+                            <div class="profile-details">
+                                <div class="profile-username" id="profileUsername">@username</div>
+                                <div class="profile-user-id" id="profileUserId" onclick="copyUserId()">
+                                    <span id="userIdText">ID: 123456789</span>
+                                    <div class="copy-icon">📋</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Stats Section -->
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalPurchases">0</div>
+                            <div class="stat-label">Куплено</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalSpent">0 <img src="https://i.postimg.cc/3N3f5zhH/IMG-1243.png" style="width: 14px; height: 14px;" alt="Stars"></div>
+                            <div class="stat-label">Общий объем трат</div>
+                        </div>
+                    </div>
+
+                    <!-- Social Links -->
+                    <div class="profile-social">
+                        <a href="#" onclick="openChannel()" class="social-link">
+                            <div class="social-icon">
+                                <img src="https://i.postimg.cc/FRmRfP3B/IMG-1218.png" alt="Канал">
+                            </div>
+                            <div class="social-text">Канал</div>
+                        </a>
+                        <a href="#" onclick="openChat()" class="social-link">
+                            <div class="social-icon">
+                                <img src="https://i.postimg.cc/c4jfKSHk/IMG-1220.png" alt="Чат">
+                            </div>
+                            <div class="social-text">Чат</div>
+                        </a>
+                    </div>
+
+                    <!-- Referral Section -->
+                    <div class="referral-section">
+                        <div class="referral-header">
+                            <h3>Реферальная программа</h3>
+                            <div class="referral-bonus">25% с каждой покупки</div>
+                        </div>
+
+                        <div class="referral-stats">
+                            <div class="referral-stat">
+                                <div class="referral-stat-value" id="referralCount">0</div>
+                                <div class="referral-stat-label">Рефералов</div>
+                            </div>
+                            <div class="referral-stat">
+                                <div class="referral-stat-value" id="referralEarnings">0 <img src="https://i.postimg.cc/3N3f5zhH/IMG-1243.png" style="width: 14px; height: 14px;" alt="Stars"></div>
+                                <div class="referral-stat-label">Заработано</div>
+                            </div>
+                        </div>
+
+                        <button class="invite-btn" onclick="openInviteModal()">
+                            Пригласить друга
+                        </button>
+
+                        <div class="referral-link">
+                            <input type="text" id="referralLinkInput" readonly value="">
+                            <button onclick="copyReferralLink()">Копировать</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Panel Section -->
+            <div class="section" id="adminSection" style="display: none;">
+                <div class="admin-panel">
+                    <div class="admin-header">
+                        <h2>Админ панель</h2>
+                        <button class="admin-add-btn" onclick="openAddItemModal()">+ Добавить товар</button>
+                    </div>
+                    <div class="admin-tabs">
+                        <button class="admin-tab active" onclick="showAdminTab('items')">Товары</button>
+                        <button class="admin-tab" onclick="showAdminTab('payments')">Заявки на оплату</button>
+                        <button class="admin-tab" onclick="showAdminTab('variants')">NFT Варианты</button>
+                        <button class="admin-tab" onclick="showAdminTab('gifts')">Подарки</button>
+                        <button class="admin-tab" onclick="showAdminTab('users')">Пользователи</button>
+                    </div>
+                    <div class="admin-content">
+                        <div class="admin-items" id="adminItems">
+                            <!-- Admin items will be loaded here -->
+                        </div>
+                        <div class="admin-payments" id="adminPayments" style="display: none;">
+                            <!-- Payment requests will be loaded here -->
+                        </div>
+                        <div class="admin-variants" id="adminVariants" style="display: none;">
+                            <!-- NFT variants will be loaded here -->
+                        </div>
+                        <div class="admin-gifts" id="adminGifts" style="display: none;">
+                            <div class="admin-gifts-header">
+                                <h3>Передача подарков пользователям</h3>
+                                <p>Отправить подарок напрямую пользователю по ID</p>
+                            </div>
+                            <div class="gift-transfer-form">
+                                <div class="form-group">
+                                    <label for="giftUserId">ID пользователя:</label>
+                                    <input type="number" id="giftUserId" placeholder="Введите ID пользователя" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="giftItemSelect">Выберите подарок:</label>
+                                    <select id="giftItemSelect" required>
+                                        <option value="">Загрузка...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="giftComment">Комментарий (необязательно):</label>
+                                    <input type="text" id="giftComment" placeholder="Комментарий к подарку">
+                                </div>
+                                <button type="button" class="admin-btn-primary" onclick="sendGiftToUser()">
+                                    Отправить подарок
+                                </button>
+                            </div>
+                        </div>
+                        <div class="admin-users" id="adminUsers" style="display: none;">
+                            <div class="admin-users-header">
+                                <h3>Управление пользователями</h3>
+                                <div class="platform-stats" id="platformStats">
+                                    <!-- Статистика платформы будет загружена здесь -->
+                                </div>
+                            </div>
+                            <div class="users-search">
+                                <input type="text" id="userSearchInput" placeholder="Поиск по username или ID...">
+                                <button onclick="searchUser()">Найти</button>
+                            </div>
+                            <div class="users-list" id="usersList">
+                                <!-- Список пользователей будет загружен здесь -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav" id="bottomNav">
+            <div class="nav-item active">
+                <img class="nav-icon" src="https://i.postimg.cc/FHzrQQZD/IMG-1211.png" alt="Маркет">
+                <span class="nav-text">Маркет</span>
+            </div>
+            <div class="nav-item">
+                <img class="nav-icon" src="https://i.postimg.cc/7Y0wWbDF/IMG-1281.png" alt="Активность">
+                <span class="nav-text">Активность</span>
+            </div>
+            <div class="nav-item">
+                <img class="nav-icon" src="https://i.postimg.cc/fLj0VfZ0/IMG-1204.png" alt="Инвентарь">
+                <span class="nav-text">Инвентарь</span>
+            </div>
+            <div class="nav-item">
+                <img class="nav-icon" src="https://i.postimg.cc/bwjYJs6w/IMG-1201.png" alt="Профиль">
+                <span class="nav-text">Профиль</span>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Purchase Modal -->
+    <div class="purchase-modal" id="purchaseModal">
+        <div class="modal-overlay" onclick="closePurchaseModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closePurchaseModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-image" id="modalImage"></div>
+                <div class="modal-info">
+                    <h3 class="modal-title" id="modalTitle"></h3>
+                    <div class="modal-id" id="modalId"></div>
+                    <div class="modal-price" id="modalPrice"></div>
+                </div>
+                <button class="modal-buy-btn" id="modalBuyBtn">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2550/2550277.png" alt="Buy" class="btn-icon">
+                    Купить
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Methods Modal -->
+    <div class="payment-methods-modal" id="paymentMethodsModal">
+        <div class="modal-overlay" onclick="closePaymentMethodsModal()"></div>
+        <div class="payment-methods-modal-content">
+            <div class="modal-header">
+                <h3>Способы оплаты</h3>
+                <button class="modal-close" onclick="closePaymentMethodsModal()">×</button>
+            </div>
+            <div class="payment-methods-modal-body">
+                <div class="payment-methods-item-info">
+                    <div class="payment-methods-item-image" id="paymentMethodsItemImage"></div>
+                    <div class="payment-methods-item-name" id="paymentMethodsItemName"></div>
+                </div>
+                <div class="payment-methods-list" id="paymentMethodsList">
+                    <!-- Payment methods will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="payment-modal" id="paymentModal">
+        <div class="modal-overlay" onclick="closePaymentModal()"></div>
+        <div class="payment-modal-content">
+            <div class="modal-header">
+                <h3>Оплата</h3>
+                <button class="modal-close" onclick="closePaymentModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="payment-info">
+                    <div class="payment-item-info">
+                        <div class="payment-item-image" id="paymentItemImage"></div>
+                        <div class="payment-item-details">
+                            <h4 id="paymentItemName"></h4>
+                            <div class="payment-item-price" id="paymentItemPrice"></div>
+                        </div>
+                    </div>
+
+                    <div class="payment-instructions" id="paymentInstructions">
+                        <!-- Payment instructions will be dynamically loaded here -->
+                    </div>
+
+                    <div class="payment-actions">
+                        <button class="payment-cancel-btn" onclick="closePaymentModal()">
+                            <img src="https://cdn-icons-png.flaticon.com/512/4225/4225636.png" alt="Cancel" class="btn-icon">
+                            Отмена
+                        </button>
+                        <button class="payment-confirm-btn" onclick="confirmPayment()">
+                            <img src="https://cdn-icons-png.flaticon.com/512/66/66936.png" alt="Paid" class="btn-icon">
+                            Я оплатил
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inventory Modal -->
+    <div class="inventory-modal" id="inventoryModal">
+        <div class="modal-overlay" onclick="closeInventoryModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeInventoryModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-image" id="inventoryModalImage"></div>
+                <div class="modal-info">
+                    <h3 class="modal-title" id="inventoryModalTitle"></h3>
+                </div>
+                <div class="modal-actions">
+                    <button class="modal-action-btn withdraw-btn" onclick="withdrawItem()">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1286/1286853.png" alt="Withdraw" class="btn-icon">
+                        Вывести
+                    </button>
+                    <button class="modal-action-btn transfer-btn" onclick="openTransferModal(currentInventoryItem)">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1004/1004012.png" alt="Transfer" class="btn-icon">
+                        Передача
+                    </button>
+                </div>
+                <div class="modal-details">
+                    <div class="detail-row">
+                        <span class="detail-label">ID подарка</span>
+                        <span class="detail-value" id="inventoryModalId">#0000</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Владелец</span>
+                        <span class="detail-value" id="inventoryModalOwner">UQDy...liDW</span>
+                    </div>
+                    <div class="detail-row" id="priceRow">
+                        <span class="detail-label">Стоимость</span>
+                        <span class="detail-value" id="inventoryModalPrice">0 Stars</span>
+                    </div>
+                    <div class="detail-row" id="modelRow" style="display: none;">
+                        <span class="detail-label">Модель</span>
+                        <span class="detail-value" id="inventoryModalModel">Boxing</span>
+                    </div>
+                    <div class="detail-row" id="backgroundRow" style="display: none;">
+                        <span class="detail-label">Фон</span>
+                        <span class="detail-value" id="inventoryModalBackground">Black</span>
+                    </div>
+                    <div class="detail-row" id="commentRow" style="display: none;">
+                        <span class="detail-label">Комментарий</span>
+                        <span class="detail-value" id="inventoryModalComment"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Статус</span>
+                        <span class="detail-value status-rare" id="inventoryModalStatus">Редкий</span>
+                    </div>
+                </div>
+                <div class="modal-upgrade-section">
+                    <button class="modal-action-btn upgrade-btn" onclick="upgradeToNFT()">
+                        <img src="https://cdn-icons-png.flaticon.com/512/263/263087.png" alt="Upgrade" class="upgrade-icon">
+                        Улучшить подарок
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invite Modal -->
+    <div class="invite-modal" id="inviteModal">
+        <div class="modal-overlay" onclick="closeInviteModal()"></div>
+        <div class="invite-modal-content">
+            <div class="invite-modal-header">
+                <h3>Пригласить друга</h3>
+                <button class="modal-close" onclick="closeInviteModal()">×</button>
+            </div>
+            <div class="invite-modal-body">
+                <div class="invite-info">
+                    <div class="invite-icon">🎁</div>
+                    <div class="invite-title">Получайте 25% с каждой покупки</div>
+                    <div class="invite-description">Приглашайте друзей и получайте 25% от их покупок в виде TON</div>
+                </div>
+
+                <div class="invite-link-section">
+                    <label>Ваша реферальная ссылка:</label>
+                    <div class="invite-link-container">
+                        <input type="text" id="inviteModalLink" class="invite-link-input" readonly>
+                    </div>
+                    <div class="invite-buttons">
+                        <button class="invite-copy-btn" onclick="copyInviteLink()">Копировать</button>
+                        <button class="invite-share-btn" onclick="shareToTelegram()">Поделиться</button>
+                    </div>
+                </div>
+
+                <div class="invite-actions">
+                    <button class="share-telegram-btn" onclick="shareToTelegram()">
+                        <span>📤</span>
+                        Поделиться в Telegram
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Item Modal -->
+    <div class="admin-item-modal" id="adminItemModal">
+        <div class="modal-overlay" onclick="closeAdminItemModal()"></div>
+        <div class="admin-modal-content">
+            <div class="modal-header">
+                <h3 id="adminModalTitle">Добавить товар</h3>
+                <button class="modal-close" onclick="closeAdminItemModal()">×</button>
+            </div>
+            <div class="admin-modal-body">
+                <div class="admin-form">
+                    <div class="form-group">
+                        <label>Изображение (URL)</label>
+                        <input type="text" id="itemImage" placeholder="https://example.com/image.png">
+                    </div>
+                    <div class="form-group">
+                        <label>Название</label>
+                        <input type="text" id="itemName" placeholder="Название товара">
+                    </div>
+                    <div class="form-group">
+                        <label>Описание</label>
+                        <textarea id="itemDescription" placeholder="Описание товара"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Цены в разных валютах</label>
+                        <div class="currency-inputs">
+                            <div class="currency-input-group">
+                                <label>TON</label>
+                                <input type="number" id="itemPriceTON" placeholder="0.00" step="0.01">
+                            </div>
+                            <div class="currency-input-group">
+                                <label>Stars <img src="https://i.postimg.cc/3N3f5zhH/IMG-1243.png" style="width: 16px; height: 16px;" alt="Stars"></label>
+                                <input type="number" id="itemPriceStars" placeholder="0" step="1">
+                            </div>
+                            <div class="currency-input-group">
+                                <label>₽ Рубли</label>
+                                <input type="number" id="itemPriceRubles" placeholder="0" step="0.01">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Кол-во товаров</label>
+                        <input type="number" id="itemStock" placeholder="1" min="1">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Количество штук</label>
+                            <input type="text" id="itemQuantity" placeholder="x1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Мини-текст (NEW, TOP и т.д.)</label>
+                        <input type="text" id="itemTag" placeholder="NEW">
+                    </div>
+                    <div class="form-group">
+                        <label>Цвет градиента</label>
+                        <select id="itemTagColor">
+                            <option value="new">NEW (Зеленый)</option>
+                            <option value="top">TOP (Красный)</option>
+                            <option value="rare">RARE (Фиолетовый)</option>
+                            <option value="sale">SALE (Оранжевый)</option>
+                            <option value="hot">HOT (Розовый)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="itemStatus">Статус подарка</label>
+                            <select id="itemStatus">
+                                <option value="Редкий">Редкий</option>
+                                <option value="Ограниченно">Ограниченно</option>
+                                <option value="Эксклюзивный">Эксклюзивный</option>
+                                <option value="Легендарный">Легендарный</option>
+                                <option value="Обычный">Обычный</option>
+                                <option value="Премиум">Премиум</option>
+                                <option value="Коллекционный">Коллекционный</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="itemStatusColor">Цвет статуса</label>
+                            <select id="itemStatusColor">
+                                <option value="rare">Фиолетовый (Редкий)</option>
+                                <option value="limited">Оранжевый (Ограниченно)</option>
+                                <option value="exclusive">Розовый (Эксклюзивный)</option>
+                                <option value="legendary">Золотой (Легендарный)</option>
+                                <option value="common">Серый (Обычный)</option>
+                                <option value="premium">Синий (Премиум)</option>
+                                <option value="collectible">Красный (Коллекционный)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- NFT Variants Section -->
+                    <div class="form-group">
+                        <label>NFT Варианты улучшений</label>
+                        <div class="nft-variants-container" id="nftVariantsContainer">
+                            <div class="nft-variant-item">
+                                <div class="variant-inputs">
+                                    <input type="text" placeholder="URL фотки" class="variant-url">
+                                    <input type="text" placeholder="Модель (например: Boxing)" class="variant-model">
+                                    <input type="text" placeholder="Фон (например: Black)" class="variant-background">
+                                    <button type="button" class="remove-variant-btn" onclick="removeVariant(this)">×</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="add-variant-btn" onclick="addVariant()">+ Добавить вариант</button>
+                    </div>
+                </div>
+                <div class="admin-modal-actions">
+                    <button class="admin-btn-secondary" onclick="closeAdminItemModal()">Отмена</button>
+                    <button class="admin-btn-primary" onclick="saveAdminItem()">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Up Stars Modal -->
+    <div class="topup-modal" id="topUpModal">
+        <div class="modal-overlay" onclick="closeTopUpModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Пополнение Stars</h3>
+                <button class="modal-close" onclick="closeTopUpModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="topup-info">
+                    <div class="topup-icon"><img src="https://i.postimg.cc/bNgy4WgD/IMG-1243.png" style="width: 48px; height: 48px;" alt="Stars"></div>
+                    <div class="topup-description">Введите количество Stars для пополнения</div>
+                </div>
+                <div class="topup-form">
+                    <div class="topup-field">
+                        <label for="topUpAmount">Количество Stars:</label>
+                        <input type="number" id="topUpAmount" placeholder="100" min="1" step="1">
+                    </div>
+                </div>
+                <div class="topup-actions">
+                    <button class="topup-cancel-btn" onclick="closeTopUpModal()">Отмена</button>
+                    <button class="topup-confirm-btn" onclick="proceedToTopUpPayment()">
+                            <img src="https://cdn-icons-png.flaticon.com/512/66/66936.png" alt="Top Up" class="btn-icon">
+                            Пополнить
+                        </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Up Payment Modal -->
+    <div class="topup-payment-modal" id="topUpPaymentModal">
+        <div class="modal-overlay" onclick="closeTopUpPaymentModal()"></div>
+        <div class="payment-modal-content">
+            <div class="modal-header">
+                <h3>Пополнение Stars</h3>
+                <button class="modal-close" onclick="closeTopUpPaymentModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="payment-info">
+                    <div class="payment-item-info">
+                        <div class="payment-item-image"><img src="https://i.postimg.cc/bNgy4WgD/IMG-1243.png" style="width: 48px; height: 48px;" alt="Stars"></div>
+                        <div class="payment-item-details">
+                            <h4>Пополнение Stars</h4>
+                            <div class="payment-item-price" id="topUpPaymentPrice"></div>
+                        </div>
+                    </div>
+
+                    <div class="payment-instructions">
+                        <div class="payment-step">
+                            <div class="step-number">1</div>
+                            <div class="step-text">Отправьте <span id="topUpStarsAmount"></span> <img src="https://i.postimg.cc/3N3f5zhH/IMG-1243.png" style="width: 14px; height: 14px; vertical-align: middle;" alt="Stars"> Telegram Stars менеджеру обычным подарком:</div>
+                        </div>
+                        <div class="payment-contact">
+                            <div class="contact-label">Менеджер поддержки:</div>
+                            <div class="contact-info">
+                                <span>@MetaGift_support</span>
+                                <button class="contact-btn" onclick="openTelegramContact('@MetaGift_support')">Написать</button>
+                            </div>
+                        </div>
+                        <div class="payment-step">
+                            <div class="step-number">2</div>
+                            <div class="step-text">После отправки звезд обычным подарком нажмите кнопку "Я оплатил"</div>
+                        </div>
+                    </div>
+
+                    <div class="payment-actions">
+                        <button class="payment-cancel-btn" onclick="closeTopUpPaymentModal()">
+                            <img src="https://cdn-icons-png.flaticon.com/512/4225/4225636.png" alt="Cancel" class="btn-icon">
+                            Отмена
+                        </button>
+                        <button class="payment-confirm-btn" onclick="confirmTopUpPayment()">
+                            <img src="https://cdn-icons-png.flaticon.com/512/66/66936.png" alt="Paid" class="btn-icon">
+                            Я оплатил
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transfer Modal -->
+    <div class="transfer-modal" id="transferModal">
+        <div class="modal-overlay" onclick="closeTransferModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Передача подарка</h3>
+                <button class="modal-close" onclick="closeTransferModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="transfer-item-info">
+                    <div class="transfer-item-image" id="transferItemImage">
+                        🎁
+                    </div>
+                    <div class="transfer-item-details">
+                        <h4 id="transferItemName">Подарок</h4>
+                        <div class="transfer-item-meta">
+                            <span class="transfer-item-price" id="transferItemPrice">0 TON</span>
+                            <span class="transfer-item-id" id="transferItemId">#0000</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="transfer-form">
+                    <div class="transfer-field">
+                        <label for="transferUserId">ID получателя:</label>
+                        <input type="number" id="transferUserId" placeholder="Введите ID пользователя">
+                    </div>
+                    <div class="transfer-field">
+                        <label for="transferComment">Комментарий (необязательно):</label>
+                        <textarea id="transferComment" placeholder="Добавьте комментарий к подарку..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="transfer-actions">
+                <button class="transfer-cancel-btn" onclick="closeTransferModal()">
+                    <img src="https://cdn-icons-png.flaticon.com/512/4225/4225636.png" alt="Cancel" class="btn-icon">
+                    Отмена
+                </button>
+                <button class="transfer-send-btn" onclick="confirmTransfer()">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1004/1004012.png" alt="Send" class="btn-icon">
+                    Отправить
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upgrade Confirmation Modal -->
+    <div class="upgrade-confirm-modal" id="upgradeConfirmModal">
+        <div class="modal-overlay" onclick="closeUpgradeConfirmModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Улучшение подарка</h3>
+                <button class="modal-close" onclick="closeUpgradeConfirmModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="upgrade-info">
+                    <div class="upgrade-icon">🎨</div>
+                    <div class="upgrade-title">Вы действительно хотите улучшить свой подарок?</div>
+                    <div class="upgrade-description">
+                        Ваша Печатная машина будет улучшена в уникальный подарок с случайной моделью и фоном.
+                        <br><br>
+                        Стоимость улучшения: <strong>25 <img src="https://i.postimg.cc/3N3f5zhH/IMG-1243.png" style="width: 16px; height: 16px; vertical-align: middle;" alt="Stars"></strong>
+                    </div>
+                </div>
+                <div class="upgrade-actions">
+                    <button class="upgrade-cancel-btn" onclick="closeUpgradeConfirmModal()">
+                        <img src="https://cdn-icons-png.flaticon.com/512/4225/4225636.png" alt="Cancel" class="btn-icon">
+                        Отмена
+                    </button>
+                    <button class="upgrade-pay-btn" onclick="confirmUpgrade()">
+                        <img src="https://i.postimg.cc/3N3f5zhH/IMG-1243.png" alt="Stars" class="btn-icon">
+                        Оплатить 25 звезд
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Roulette Modal -->
+    <div class="roulette-modal" id="rouletteModal">
+        <div class="modal-overlay"></div>
+        <div class="roulette-modal-content">
+            <div class="roulette-header">
+                <h3>🎰 Улучшение в процессе...</h3>
+                <div class="roulette-subtitle">Определяем ваш уникальный подарок!</div>
+            </div>
+            <div class="roulette-container">
+                <div class="roulette-pointer">▼</div>
+                <div class="roulette-wheel" id="rouletteWheel">
+                    <!-- Roulette items will be generated here -->
+                </div>
+            </div>
+            <div class="roulette-info">
+                <div class="roulette-status">Подбираем улучшение...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Channel Subscription Modal -->
+    <div class="channel-subscription-modal" id="channelSubscriptionModal">
+        <div class="modal-overlay" onclick="closeChannelModal()"></div>
+        <div class="channel-modal-content">
+            <div class="channel-modal-header">
+                <button class="channel-close-btn" onclick="closeChannelModal()">×</button>
+            </div>
+            <div class="channel-modal-body">
+                <div class="channel-info">
+                    <div class="channel-avatar">
+                        <img src="https://i.postimg.cc/rmVS4RRv/IMG-1226.png" alt="Channel Avatar">
+                    </div>
+                    <div class="channel-details">
+                        <h3>MetaGift News</h3>
+                        <p>@MetaGift_News</p>
+                        <div class="channel-description">
+                            Подпишись на наш канал, чтобы быть в курсе всех новостей и обновлений!
+                        </div>
+                    </div>
+                </div>
+                <div class="channel-actions">
+                    <button class="subscribe-btn" onclick="subscribeToChannel()">
+                        Подписаться
+                    </button> <button class="maybe-later-btn" onclick="closeChannelModal()">
+                        Может быть позже
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Variant Modal -->
+    <div class="variant-modal" id="variantModal">
+        <div class="modal-overlay" onclick="closeVariantModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="variantModalTitle">Добавить вариант</h3>
+                <button class="modal-close" onclick="closeVariantModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="variant-form">
+                    <div class="form-group">
+                        <label for="variantUrl">URL фотки:</label>
+                        <input type="text" id="variantUrl" placeholder="https://example.com/image.jpg">
+                    </div>
+                    <div class="form-group">
+                        <label for="variantModel">Модель:</label>
+                        <input type="text" id="variantModel" placeholder="Boxing">
+                    </div>
+                    <div class="form-group">
+                        <label for="variantBackground">Фон:</label>
+                        <input type="text" id="variantBackground" placeholder="Black">
+                    </div>
+                </div>
+                <div class="variant-actions">
+                    <button class="admin-btn-secondary" onclick="closeVariantModal()">Отмена</button>
+                    <button class="admin-btn-primary" onclick="saveVariant()">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

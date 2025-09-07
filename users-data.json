@@ -1,0 +1,86 @@
+{
+  "7867539237": {
+    "id": 7867539237,
+    "username": "MetaGift_Support",
+    "balance": {
+      "stars": 0
+    },
+    "stats": {
+      "totalPurchases": 0,
+      "totalSpent": 0,
+      "referralCount": 0,
+      "referralEarnings": 0
+    },
+    "inventory": [],
+    "nfts": [],
+    "activity": [],
+    "profile": {
+      "createdAt": "2025-09-07T07:21:06.225Z",
+      "lastLogin": "2025-09-07T08:01:20.238Z",
+      "firstName": "I’m not",
+      "lastName": null,
+      "photoUrl": "https://t.me/i/userpic/320/1kq_iU-mcHo4aFiQu8J0p7LgN6TQIgA9xCFTFxD_WGrprPTxlEW0bovzdYrHpczK.svg",
+      "lastUpdated": "2025-09-07T08:01:20.239Z"
+    },
+    "referrals": {
+      "referred": [],
+      "referredBy": null
+    }
+  },
+  "7085606723": {
+    "id": 7085606723,
+    "username": "OpenHjdoa",
+    "balance": {
+      "stars": 0
+    },
+    "stats": {
+      "totalPurchases": 0,
+      "totalSpent": 0,
+      "referralCount": 0,
+      "referralEarnings": 0
+    },
+    "inventory": [],
+    "nfts": [],
+    "activity": [],
+    "profile": {
+      "createdAt": "2025-09-07T07:28:14.745Z",
+      "lastLogin": "2025-09-07T07:28:14.745Z",
+      "firstName": "Коапчик",
+      "lastName": null,
+      "photoUrl": "https://t.me/i/userpic/320/J1LbfSWO32E5F579QOd0AQYeubmeRoc1NV1Exhzx9sDu90v4dx4gsuyTYXlQa4nV.svg",
+      "lastUpdated": "2025-09-07T07:28:14.746Z"
+    },
+    "referrals": {
+      "referred": [],
+      "referredBy": null
+    }
+  },
+  "8045982372": {
+    "id": 8045982372,
+    "username": "Robowaveofficial",
+    "balance": {
+      "stars": 0
+    },
+    "stats": {
+      "totalPurchases": 0,
+      "totalSpent": 0,
+      "referralCount": 0,
+      "referralEarnings": 0
+    },
+    "inventory": [],
+    "nfts": [],
+    "activity": [],
+    "profile": {
+      "createdAt": "2025-09-07T07:42:45.764Z",
+      "lastLogin": "2025-09-07T07:57:11.619Z",
+      "firstName": "Настя😈",
+      "lastName": null,
+      "photoUrl": "https://t.me/i/userpic/320/vquVMyVwdXnB58pj1l924hdpXqhdQ-PXLGh9uSjThhrH2sDbkCSP_n-EGgbO-_ZE.svg",
+      "lastUpdated": "2025-09-07T07:57:11.619Z"
+    },
+    "referrals": {
+      "referred": [],
+      "referredBy": null
+    }
+  }
+}

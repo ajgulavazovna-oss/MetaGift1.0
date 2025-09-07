@@ -1,0 +1,19 @@
+[
+  {
+    "id": 1,
+    "name": "Печатная машина",
+    "image": "https://i.postimg.cc/d0gX8mXg/IMG-1232.png",
+    "description": "Подарок который можно будет конвертировать в NFT",
+    "prices": {
+      "TON": 1,
+      "STARS": 100,
+      "RUB": 500
+    },
+    "quantity": "1",
+    "stock": 4969,
+    "tag": "NEW",
+    "tagColor": "top",
+    "status": "Редкий",
+    "statusColor": "limited"
+  }
+]
