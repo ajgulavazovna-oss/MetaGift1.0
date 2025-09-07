@@ -103,7 +103,7 @@ const PAYMENT_METHODS = {
   STARS: {
     name: 'Telegram Stars',
     icon: 'https://i.postimg.cc/3N3f5zhH/IMG-1243.png',
-    contact: '@MetaGift_support'
+    contact: '@MetaGiftsupport'
   },
   YOOMONEY: {
     name: 'ЮMoney',
